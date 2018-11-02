@@ -27,3 +27,6 @@ hs_err_pid*
 
 # Spring config file
 /src/main/resources/application.properties
+
+# class files
+/target/*
