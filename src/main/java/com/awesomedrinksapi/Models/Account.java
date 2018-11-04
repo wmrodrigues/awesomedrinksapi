@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Data
 @Entity
@@ -17,6 +18,7 @@ public class Account {
     private String firstName;
     private String lastName;
     private Boolean confirmed;
+    private Date birthdate;
 
     public Account() {
 
@@ -75,4 +77,8 @@ public class Account {
     public void setConfirmed(Boolean confirmed) {
         this.confirmed = confirmed;
     }
+
+    public Date getBirthdate() { return this.birthdate; }
+
+    public void setBirthdate(Date birthdate) { this.birthdate = birthdate; }
 }

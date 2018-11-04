@@ -1,9 +1,7 @@
 package com.awesomedrinksapi;
 
-import java.util.List;
-
+import com.awesomedrinksapi.Exceptions.AccountNotFoundException;
 import com.awesomedrinksapi.Models.Account;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,17 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.awesomedrinksapi.Models.Account;
 import com.awesomedrinksapi.Repositories.AccountRepository;
 
 
 @RestController
 public class AccountsController {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    AccountsController() {
+    AccountsController(AccountRepository repository) {
+        this.accountRepository = repository;
 
     }
 
@@ -32,8 +29,8 @@ public class AccountsController {
 
     @GetMapping("/api/accounts/{id}")
     Account getOne(@PathVariable Long id) {
-        Account account = new Account("washington.moises@gmail.", "Washington", "Rodrigues");
-        return account;
+        return accountRepository.findById(id)
+                    .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
     @PostMapping("/api/accounts")
@@ -48,9 +45,14 @@ public class AccountsController {
                                 .map(account -> {
                                     account.setName(newAccount.getName());
                                     account.setEmail(newAccount.getEmail());
-                                    account.setFirstName(newAccount.setFirstName());
-                                    account.setLastName(newAccount.setLastName());
+                                    account.setFirstName(newAccount.getFirstName());
+                                    account.setLastName(newAccount.getLastName());
+                                    account.setBirthdate(newAccount.getBirthdate());
                                     return accountRepository.save(account);
+                                })
+                                .orElseGet(() -> {
+                                    newAccount.setId(id);
+                                    return accountRepository.save(newAccount);
                                 });
     }
 
